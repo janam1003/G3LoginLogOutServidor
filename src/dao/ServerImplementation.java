@@ -59,14 +59,14 @@ public class ServerImplementation implements SigninSignup{
 					if (id != null && password.equals(user.getPassword())) {
 						user.setName(rs.getString("name"));
 					} else {
-						throw new IncorrectLoginException("Incorrect login");
+						throw new IncorrectLoginException();
 					}
 				}
 				//Closing connection
 				Pool.freeConnection(con);
 				return user;
 		} catch (Exception e) {
-			throw new ServerErrorException("Server error");
+			throw new ServerErrorException();
 		}
 	}
 
@@ -87,7 +87,7 @@ public class ServerImplementation implements SigninSignup{
 				if (rs.next()) {
 					//Checking if login already exists
 					if (rs.getString("id") == null)
-						throw new EmailAlreadyExistException("This mail already exists");
+						throw new EmailAlreadyExistException();
 				}
 				//Defining query to insert user
 				final String insertUser = "CALL insert_res_partner_and_user(?, ?, ?, ?, ?, ?)";
@@ -108,7 +108,7 @@ public class ServerImplementation implements SigninSignup{
 				Pool.freeConnection(con);
 				return user;
 		} catch (Exception e) {
-			throw new ServerErrorException("Server error");
+			throw new ServerErrorException();
 		}
     }
     
