@@ -9,6 +9,7 @@ import Exceptions.IncorrectLoginException;
 import Exceptions.MaxUserException;
 import Exceptions.ServerErrorException;
 import Exceptions.UnknownTypeException;
+import application.App;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -184,26 +185,9 @@ public class WorkerThread extends Thread {
                  * It is called when a client disconnects from the server, and
                  * its primary purpose is to remove that client from the list of
                  * active clients.
-                 *
-                 * <Client Tracking>: In a multi-threaded server, the server may
-                 * have multiple threads <(WorkerThread)> that handle different
-                 * clients simultaneously. These threads may maintain a list or
-                 * data structure containing information about the connected
-                 * clients.
-                 *
-                 * <Synchronization>: To ensure that this client list is
-                 * accessed safely and consistently by multiple threads, it is
-                 * often necessary to use synchronization mechanisms. Java
-                 * provides tools like synchronized methods or blocks to achieve
-                 * this.
-                 *
-                 * <Removing Disconnected Clients>: When a client disconnects,
-                 * the server needs to update its list of connected clients to
-                 * reflect this change. The removeClient method typically
-                 * handles this task by removing the disconnected client from
-                 * the list in a synchronized manner.
-                 *
                  */
+                App.countThreads();
+                
                 // Close the client socket
                 skCliente.close();
 
