@@ -18,7 +18,6 @@ import Classes.MessageType;
  * @author Dani
  */
 public class App {
-
     private ServerFactory factory;
     private SigninSignup serverImplementation;
 
