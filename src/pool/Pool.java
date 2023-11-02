@@ -15,28 +15,23 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
-public class Pool {
-    
+public abstract class Pool {
+
     private static final String URL = ResourceBundle.getBundle("config.config").getString("URL");
     private static final String USER = ResourceBundle.getBundle("config.config").getString("USER");
     private static final String PASSWORD = ResourceBundle.getBundle("config.config").getString("PASSWORD");
-    private static final int MAXUSERS = (Integer.parseInt(ResourceBundle.getBundle("config.config").getString("MAXUSERS"))) ;
 
     private static Stack<Connection> connections = new Stack<>();
 
-public static Connection getConnection() throws SQLException {
-        if (connections.size() < MAXUSERS) {
-            Connection connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            connections.push(connection); 
-        } else {
-            throw new SQLException("No hay conexiones disponibles en el pool.");
+    public static synchronized Connection getConnection() throws SQLException {
+        if (!connections.isEmpty()) {
+            return connections.pop();
         }
-        return connections.pop();
+        return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
-    public static void returnConnection(Connection connection) throws SQLException {
+    public static synchronized void returnConnection(Connection connection) throws SQLException {
         if (connection != null) {
-            connection.close();
             connections.push(connection);
         }
     }
