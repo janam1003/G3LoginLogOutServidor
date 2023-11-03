@@ -1,10 +1,10 @@
 package dao;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
-import com.mysql.cj.jdbc.CallableStatement;
+import java.util.ResourceBundle;
 
 import Classes.SigninSignup;
 import Classes.User;
@@ -39,12 +39,12 @@ public class ServerImplementation implements SigninSignup{
     private ResultSet rs;
 
     @Override
-    public User SignIn(User user) throws IncorrectLoginException, ServerErrorException, UnknownTypeException, MaxUserException {
+    public User SignIn(User user) throws IncorrectLoginException, ServerErrorException, UnknownTypeException {
 		try {
 				//Establishing connection
-				con = Pool.obteinConnection();
+				con = Pool.getConnection();
 				//Defining query to check if user exists and password is correct
-				final String checkUser = "SELECT id, password, name FROM public.res_users WHERE login = ?";
+				final String checkUser = "SELECT ru.id, ru.password, rp.name FROM public.res_users AS ru JOIN public.res_partner AS rp ON ru.partner_id = rp.id WHERE ru.login = ?";
 				//Preparing statement
 				stmt = con.prepareStatement(checkUser);
 				//Setting parameters
@@ -61,20 +61,24 @@ public class ServerImplementation implements SigninSignup{
 					} else {
 						throw new IncorrectLoginException();
 					}
+				} else {
+					throw new IncorrectLoginException();
 				}
 				//Closing connection
-				Pool.freeConnection(con);
+				Pool.returnConnection(con);
 				return user;
+		} catch (IncorrectLoginException e) {
+			throw e;
 		} catch (Exception e) {
-			throw new ServerErrorException();
+			throw new ServerErrorException(e.getMessage());
 		}
 	}
 
 	@Override
-	public User signUp(User user) throws ServerErrorException, EmailAlreadyExistException, UnknownTypeException, MaxUserException {
+	public User signUp(User user) throws ServerErrorException, EmailAlreadyExistException, UnknownTypeException {
 		try {
 				//Establishing connection
-				con = Pool.obteinConnection();
+				con = Pool.getConnection();
 				//Defining query to check if user exists
 				final String checkLogin = "SELECT id FROM public.res_users WHERE login = ?";
 				//Preparing statement
@@ -105,8 +109,10 @@ public class ServerImplementation implements SigninSignup{
 				//Checking if there was an exception
 				stmtCall.getMoreResults();
 				//Closing connection
-				Pool.freeConnection(con);
+				Pool.returnConnection(con);
 				return user;
+		} catch (EmailAlreadyExistException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServerErrorException();
 		}

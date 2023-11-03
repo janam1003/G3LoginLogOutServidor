@@ -12,67 +12,61 @@ import java.io.ObjectOutputStream;
 import Classes.Message;
 import Classes.MessageType;
 
-
 /**
  *
  * @author Dani
  */
 public class App {
-    private ServerFactory factory;
-    private SigninSignup serverImplementation;
+	private SigninSignup serverImplementation;
 
-    private int contador = 0;
-    private static final int PORT = (Integer.parseInt(ResourceBundle.getBundle("config.config").getString("PORT")));
-    private static final int MAXUSERS = (Integer.parseInt(ResourceBundle.getBundle("config.config").getString("MAXUSERS")));
+	private static int contador = 0;
+	private static final int PORT = (Integer.parseInt(ResourceBundle.getBundle("config.config").getString("PORT")));
+	private static final int MAXUSERS = (Integer.parseInt(ResourceBundle.getBundle("config.config").getString("MAXUSERS")));
 
-    public void iniciar() {
-        while (true) {
-            ServerSocket servidor = null;
-            Socket cliente = null;
-            try {
-                servidor = new ServerSocket(PORT);
-                System.out.println("Waiting for the client to connect");
-                cliente = servidor.accept();
-                System.out.println("Client connected successfully");
-                if (contador < MAXUSERS) {
-                    countThreads(1);
-                    serverImplementation = factory.getServer();
-                    WorkerThread worker = new WorkerThread(cliente, serverImplementation);
-                    worker.run();
-                } else {
-                    LOGGER.warning("Max users reached wait for a bit and try again");
-                    ObjectOutputStream oos = new ObjectOutputStream(cliente.getOutputStream());
-                    Message message = new Message();
-                    message.setType(MessageType.MAX_USER_EXCEPTION);
-                    oos.writeObject(message);
-                    oos.close();
-                    cliente.close();
-                    
-                    
-                    
+	public void iniciar() {
 
-                    //Lo que haria el programa si se excede el numero maximo de conexiones
-                }
+		try {
+			ServerSocket servidor = null;
+			servidor = new ServerSocket(PORT);
+			while (true) {
+				Socket cliente = null;
+				System.out.println("Waiting for the client to connect");
+				cliente = servidor.accept();
+				System.out.println("Client connected successfully");
+				if (contador < MAXUSERS) {
+					countThreads(1);
+					WorkerThread worker = new WorkerThread(cliente);
+					worker.run();
+				} else {
+					LOGGER.warning("Max users reached wait for a bit and try again");
+					ObjectOutputStream oos = new ObjectOutputStream(cliente.getOutputStream());
+					Message message = new Message();
+					message.setType(MessageType.MAX_USER_EXCEPTION);
+					oos.writeObject(message);
+					oos.close();
+					cliente.close();
 
-            } catch (IOException e) {
-                System.out.println("Error: " + e.getMessage());
-            } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
-            }
-        }
-    }
+				}
+			}
 
-    public static void main(String[] args) {
-        App s1 = new App();
-        s1.iniciar();
-    }
+		} catch (IOException e) {
+			System.out.println("Error: " + e.getMessage());
+		} catch (Exception e) {
+			System.out.println("Error: " + e.getMessage());
+		}
+	}
 
-    public synchronized void countThreads(int x) {
-        if (x == 1) {
-            contador += 1;
+	public static void main(String[] args) {
+		App s1 = new App();
+		s1.iniciar();
+	}
 
-        } else {
-            contador -= 1;
-        }
-    }
+	public synchronized static void countThreads(int x) {
+		if (x == 1) {
+			contador += 1;
+
+		} else {
+			contador -= 1;
+		}
+	}
 }

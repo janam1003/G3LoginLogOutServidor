@@ -10,6 +10,8 @@ import Exceptions.MaxUserException;
 import Exceptions.ServerErrorException;
 import Exceptions.UnknownTypeException;
 import application.App;
+import factory.ServerFactory;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -40,7 +42,7 @@ public class WorkerThread extends Thread {
     private User user;
 
     // Stores the message received from the client.
-    private Message msg;
+    private static Message msg;
 
     // The data access object used for authentication and sign-up.
     private SigninSignup dao;
@@ -49,10 +51,10 @@ public class WorkerThread extends Thread {
     private Socket skCliente;
 
     // Input stream for reading objects from the client.
-    private ObjectInputStream inputStream = null;
+    private ObjectInputStream inputStream;
 
     // Output stream for sending objects to the client.
-    private ObjectOutputStream outputStream = null;
+    private ObjectOutputStream outputStream;
 
     /**
      * Default constructor with no parameters.
@@ -68,16 +70,16 @@ public class WorkerThread extends Thread {
      * @param skCliente The socket representing the client connection.
      * @param dao The data access object used for authentication and sign-up.
      */
-    public WorkerThread(Socket skCliente, SigninSignup dao) {
+    public WorkerThread(Socket skCliente) {
 
         // Assign the provided client socket to the instance variable.
         this.skCliente = skCliente;
 
-        // Assign the provided data access object to the instance variable.
-        this.dao = dao;
+        // Assign the data access object we get from the factory to the instance variable.
+        this.dao = ServerFactory.getServer();
 
         // Start the thread, invoking the run() method.
-        this.start();
+        //this.start();
     }
 
     /**
@@ -88,18 +90,15 @@ public class WorkerThread extends Thread {
     public void run() {
 
         try {
-
-            /**
-             * Create an input stream to read objects from the client's socket.
-             */
-            inputStream = new ObjectInputStream(skCliente.getInputStream());
-
             /**
              * Create an output stream to send objects to the client through its
              * socket.
              */
             outputStream = new ObjectOutputStream(skCliente.getOutputStream());
-
+			/**
+             * Create an input stream to read objects from the client's socket.
+             */
+            inputStream = new ObjectInputStream(skCliente.getInputStream());
             /**
              * Read a Message object from the client.
              */
@@ -165,6 +164,7 @@ public class WorkerThread extends Thread {
             /**
              * Handle other exceptions by sending a server error response.
              */
+			e.printStackTrace();
             msg.setType(MessageType.SERVER_ERROR_RESPONSE);
 
         } finally {
@@ -186,7 +186,7 @@ public class WorkerThread extends Thread {
                  * its primary purpose is to remove that client from the list of
                  * active clients.
                  */
-                App.countThreads();
+                App.countThreads(-1);
                 
                 // Close the client socket
                 skCliente.close();
