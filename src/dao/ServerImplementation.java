@@ -86,7 +86,7 @@ public class ServerImplementation implements SigninSignup{
 		
 				if (rs.next()) {
 					//Checking if login already exists
-					if (rs.getString("id") == null)
+					if (rs.getString("id") != null)
 						throw new EmailAlreadyExistException();
 				}
 				//Defining query to insert user
