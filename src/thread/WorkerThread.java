@@ -77,9 +77,6 @@ public class WorkerThread extends Thread {
 
         // Assign the data access object we get from the factory to the instance variable.
         this.dao = ServerFactory.getServer();
-
-        // Start the thread, invoking the run() method.
-        //this.start();
     }
 
     /**
@@ -186,7 +183,7 @@ public class WorkerThread extends Thread {
                  * its primary purpose is to remove that client from the list of
                  * active clients.
                  */
-                App.countThreads(-1);
+                App.countThreads(-1, null);
                 
                 // Close the client socket
                 skCliente.close();
