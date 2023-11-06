@@ -7,12 +7,10 @@ public class ExitThread extends Thread {
 	@Override
 	public void run() {
 		try {
-			Scanner scanner = new Scanner(System.in);
 			while (true) {
-				int input = scanner.nextInt();
-				if (input == 1) {
+				int input = System.in.read();
+				if (input == '1') {
 					Pool.closeAllConnections();
-					scanner.close();
 					System.exit(0);
 				}
 			}
