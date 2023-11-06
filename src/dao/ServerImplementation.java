@@ -10,7 +10,6 @@ import Classes.SigninSignup;
 import Classes.User;
 import Exceptions.EmailAlreadyExistException;
 import Exceptions.IncorrectLoginException;
-import Exceptions.MaxUserException;
 import Exceptions.ServerErrorException;
 import Exceptions.UnknownTypeException;
 import pool.Pool;

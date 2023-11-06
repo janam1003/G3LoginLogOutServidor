@@ -15,7 +15,7 @@ import java.sql.SQLException;
 import java.util.ResourceBundle;
 import java.util.Stack;
 
-public abstract class Pool {
+public class Pool {
 
     private static final String URL = ResourceBundle.getBundle("config.config").getString("URL");
     private static final String USER = ResourceBundle.getBundle("config.config").getString("USER");
