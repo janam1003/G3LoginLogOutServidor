@@ -6,6 +6,7 @@
 package pool;
 
 /**
+ * This class represents a connection pool for managing database connections.
  *
  * @author Dani
  */
@@ -17,12 +18,21 @@ import java.util.Stack;
 
 public class Pool {
 
+    // Constants for the database connection details
     private static final String URL = ResourceBundle.getBundle("config.config").getString("URL");
     private static final String USER = ResourceBundle.getBundle("config.config").getString("USER");
     private static final String PASSWORD = ResourceBundle.getBundle("config.config").getString("PASSWORD");
 
+    // A stack to hold available database connections
     private static Stack<Connection> connections = new Stack<>();
 
+    /**
+     * Retrieve a database connection from the pool. If connections are available in the pool, 
+     * it will return one; otherwise, it creates a new connection.
+     *
+     * @return A database connection
+     * @throws SQLException if a database connection cannot be established
+     */
     public static synchronized Connection getConnection() throws SQLException {
         if (!connections.isEmpty()) {
             return connections.pop();
@@ -30,12 +40,23 @@ public class Pool {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     }
 
+    /**
+     * Return a database connection to the pool for reuse.
+     *
+     * @param connection The database connection to be returned to the pool
+     * @throws SQLException if there is an issue with returning the connection
+     */
     public static synchronized void returnConnection(Connection connection) throws SQLException {
         if (connection != null) {
             connections.push(connection);
         }
     }
 
+    /**
+     * Close all connections in the pool and clear the pool.
+     *
+     * @throws SQLException if there is an issue with closing the connections
+     */
     public static void closeAllConnections() throws SQLException {
         while (!connections.isEmpty()) {
             Connection connection = connections.pop();
