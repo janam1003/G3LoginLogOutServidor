@@ -10,6 +10,7 @@ package pool;
  *
  * @author Dani
  */
+import Exceptions.ServerErrorException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -31,22 +32,26 @@ public class Pool {
      * it will return one; otherwise, it creates a new connection.
      *
      * @return A database connection
-     * @throws SQLException if a database connection cannot be established
+     * @throws ServerErrorException if a database connection cannot be established
      */
-    public static synchronized Connection getConnection() throws SQLException {
+    public static synchronized Connection getConnection() throws ServerErrorException {
+        try {
         if (!connections.isEmpty()) {
             return connections.pop();
         }
         return DriverManager.getConnection(URL, USER, PASSWORD);
+    }catch(SQLException e ){
+     throw new ServerErrorException("Unable to get a connection");
+    }
     }
 
     /**
      * Return a database connection to the pool for reuse.
      *
      * @param connection The database connection to be returned to the pool
-     * @throws SQLException if there is an issue with returning the connection
+     * @throws ServerErrorException if there is an issue with returning the connection
      */
-    public static synchronized void returnConnection(Connection connection) throws SQLException {
+    public static synchronized void returnConnection(Connection connection) throws ServerErrorException {
         if (connection != null) {
             connections.push(connection);
         }
@@ -55,12 +60,16 @@ public class Pool {
     /**
      * Close all connections in the pool and clear the pool.
      *
-     * @throws SQLException if there is an issue with closing the connections
+     * @throws ServerErrorException if there is an issue with closing the connections
      */
-    public static void closeAllConnections() throws SQLException {
+    public static void closeAllConnections() throws ServerErrorException {
+        try{
         while (!connections.isEmpty()) {
             Connection connection = connections.pop();
             connection.close();
         }
+        }catch(SQLException e){
+      throw new ServerErrorException("Unable to close every connection");
+    }
     }
 }
