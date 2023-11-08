@@ -83,7 +83,6 @@ public class ServerImplementation implements SigninSignup{
 				stmt.setString(1, user.getMail());
 				//Executing query
 				rs = stmt.executeQuery();
-		
 				if (rs.next()) {
 					//Checking if login already exists
 					if (rs.getString("id") != null)
@@ -102,8 +101,6 @@ public class ServerImplementation implements SigninSignup{
 				stmtCall.setInt(6, user.getZip());
 				//Executing query
 				stmtCall.execute();
-				//Checking if there was an exception
-				stmtCall.getMoreResults();
 				//Closing connection
 				Pool.returnConnection(con);
 				return user;
