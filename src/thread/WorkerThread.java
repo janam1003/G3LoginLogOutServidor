@@ -11,7 +11,6 @@ import Exceptions.ServerErrorException;
 import Exceptions.UnknownTypeException;
 import application.App;
 import factory.ServerFactory;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -56,6 +55,9 @@ public class WorkerThread extends Thread {
     // Output stream for sending objects to the client.
     private ObjectOutputStream outputStream;
 
+    // logger
+    private static final Logger logger = Logger.getLogger(WorkerThread.class.getName());
+
     /**
      * Default constructor with no parameters.
      */
@@ -87,15 +89,20 @@ public class WorkerThread extends Thread {
     public void run() {
 
         try {
+
+            logger.info("Initializing workerThread.");
+
             /**
              * Create an output stream to send objects to the client through its
              * socket.
              */
             outputStream = new ObjectOutputStream(skCliente.getOutputStream());
-			/**
+
+            /**
              * Create an input stream to read objects from the client's socket.
              */
             inputStream = new ObjectInputStream(skCliente.getInputStream());
+
             /**
              * Read a Message object from the client.
              */
@@ -148,6 +155,8 @@ public class WorkerThread extends Thread {
              */
             msg.setType(MessageType.INCORRECT_LOGIN_RESPONSE);
 
+            logger.severe("The email or password are incorrect: " + e.getMessage());
+
         } catch (EmailAlreadyExistException e) {
 
             /**
@@ -155,14 +164,17 @@ public class WorkerThread extends Thread {
              */
             msg.setType(MessageType.EMAIL_ALREADY_EXIST_RESPONSE);
 
+            logger.severe("The email already exists: " + e.getMessage());
+
         } catch (MaxUserException | ServerErrorException | UnknownTypeException
                 | IOException | ClassNotFoundException e) {
 
             /**
              * Handle other exceptions by sending a server error response.
              */
-
             msg.setType(MessageType.SERVER_ERROR_RESPONSE);
+
+            logger.severe("Error: " + e.getMessage());
 
         } finally {
 
@@ -184,7 +196,7 @@ public class WorkerThread extends Thread {
                  * active clients.
                  */
                 App.countThreads(-1, null);
-                
+
                 // Close the client socket
                 skCliente.close();
 
@@ -194,9 +206,7 @@ public class WorkerThread extends Thread {
                  * Handle any exceptions that may occur during the closing of
                  * streams or the socket.
                  */
-                Logger.getLogger(WorkerThread.class.getName()).log(Level.SEVERE,
-                        null, ex);
-
+                logger.severe("Error: " + ex.getMessage());
             }
         }
     }
