@@ -161,7 +161,7 @@ public class WorkerThread extends Thread {
             /**
              * Handle other exceptions by sending a server error response.
              */
-			e.printStackTrace();
+
             msg.setType(MessageType.SERVER_ERROR_RESPONSE);
 
         } finally {

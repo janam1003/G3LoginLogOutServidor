@@ -1,12 +1,12 @@
 package thread;
 
-import java.util.Scanner;
 import pool.Pool;
 
 public class ExitThread extends Thread {
 	@Override
 	public void run() {
 		try {
+
 			while (true) {
 				int input = System.in.read();
 				if (input == '1') {
@@ -15,7 +15,7 @@ public class ExitThread extends Thread {
 				}
 			}
 		} catch (Exception e) {
-			//LOGGER.severe("a");
+			
 		}
 	}
 }

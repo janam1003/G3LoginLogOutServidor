@@ -1,11 +1,8 @@
 package dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ResourceBundle;
-
 import Classes.SigninSignup;
 import Classes.User;
 import Exceptions.EmailAlreadyExistException;
@@ -97,12 +94,12 @@ public class ServerImplementation implements SigninSignup{
 				//Preparing statement
 				stmtCall = con.prepareCall(insertUser);
 				//Setting parameters
-				stmt.setString(1, user.getName());
-				stmt.setString(2, user.getMail());
-				stmt.setString(3, user.getPhone());
-				stmt.setString(4, user.getPassword());
-				stmt.setString(5, user.getAddress());
-				stmt.setInt(6, user.getZip());
+				stmtCall.setString(1, user.getName());
+				stmtCall.setString(2, user.getMail());
+				stmtCall.setString(3, user.getPhone());
+				stmtCall.setString(4, user.getPassword());
+				stmtCall.setString(5, user.getAddress());
+				stmtCall.setInt(6, user.getZip());
 				//Executing query
 				stmtCall.execute();
 				//Checking if there was an exception
