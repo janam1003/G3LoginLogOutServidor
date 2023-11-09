@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 import pool.Pool;
 
 /**
- *
+ * This class implements the methods to manage the sign in and sign up of the users.
  * @author Iñigo
  */
 public class ServerImplementation implements SigninSignup {
@@ -42,8 +42,11 @@ public class ServerImplementation implements SigninSignup {
     /**
      * Logger object
      */
-	  private static final Logger logger = Logger.getLogger(ServerImplementation.class.getName());
-      
+	private static final Logger logger = Logger.getLogger(ServerImplementation.class.getName());
+    
+	/**
+	 * 
+	 */
     @Override
     public User SignIn(User user) throws IncorrectLoginException, ServerErrorException, UnknownTypeException {
 		try {

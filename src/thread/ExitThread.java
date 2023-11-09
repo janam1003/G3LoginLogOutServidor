@@ -2,17 +2,20 @@ package thread;
 
 import java.util.logging.Logger;
 import pool.Pool;
-/*
+
+/**
  * This class manages the thread to exit the application.
+ *
+ * @author Iñigo
  */
 public class ExitThread extends Thread {
 
-  /*
+  	/**
 	 * Logger Object.
 	 */
    private static final Logger logger = Logger.getLogger(ExitThread.class.getName());
   
-	/*
+	/**
 	 * This method manages the thread to exit the application.
 	 */
 	@Override
