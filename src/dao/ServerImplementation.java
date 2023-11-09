@@ -10,34 +10,44 @@ import Exceptions.EmailAlreadyExistException;
 import Exceptions.IncorrectLoginException;
 import Exceptions.ServerErrorException;
 import Exceptions.UnknownTypeException;
+import java.util.logging.Logger;
 import pool.Pool;
 
 /**
  *
  * @author Iñigo
  */
-public class ServerImplementation implements SigninSignup{
+public class ServerImplementation implements SigninSignup {
 
-	/**
-	 * Connection to database
-	 */
+    /**
+     * Connection to database
+     */
     private Connection con;
-	/**
-	 * Statement to execute query
-	 */
+
+    /**
+     * Statement to execute query
+     */
     private PreparedStatement stmt;
-	/**
-	 * Statement to execute query
-	 */
-	private java.sql.CallableStatement stmtCall;
-	/**
-	 * Result of query
-	 */
+
+    /**
+     * Statement to execute query
+     */
+    private java.sql.CallableStatement stmtCall;
+
+    /**
+     * Result of query
+     */
     private ResultSet rs;
-	
+
+    /**
+     * Logger object
+     */
+	  private static final Logger logger = Logger.getLogger(ServerImplementation.class.getName());
+      
     @Override
     public User SignIn(User user) throws IncorrectLoginException, ServerErrorException, UnknownTypeException {
 		try {
+       logger.info("Validating user credentials for signIn.");
 				//Establishing connection
 				con = Pool.getConnection();
 				//Defining query to check if user exists and password is correct
@@ -65,8 +75,10 @@ public class ServerImplementation implements SigninSignup{
 				Pool.returnConnection(con);
 				return user;
 		} catch (IncorrectLoginException e) {
+      logger.severe("Incorrect Login: " + e.getMessage());
 			throw e;
 		} catch (Exception e) {
+      logger.severe("Error: " + e.getMessage());
 			throw new ServerErrorException(e.getMessage());
 		}
 	}
@@ -74,6 +86,7 @@ public class ServerImplementation implements SigninSignup{
 	@Override
 	public User signUp(User user) throws ServerErrorException, EmailAlreadyExistException, UnknownTypeException {
 		try {
+       logger.info("Validating user credentials for signUp.");
 				//Establishing connection
 				con = Pool.getConnection();
 				//Defining query to check if user exists
@@ -111,10 +124,13 @@ public class ServerImplementation implements SigninSignup{
 				Pool.returnConnection(con);
 				return user;
 		} catch (EmailAlreadyExistException e) {
+       logger.severe("Email Exists: " + e.getMessage());
 			throw e;
 		} catch (Exception e) {
+        logger.severe("Error: " + e.getMessage());
 			throw new ServerErrorException();
 		}
-    }
-    
+
+  }
+
 }

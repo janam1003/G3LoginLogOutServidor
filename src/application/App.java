@@ -5,7 +5,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ResourceBundle;
 import java.util.logging.Logger;
-
 import thread.ExitThread;
 import thread.WorkerThread;
 import java.io.ObjectOutputStream;
@@ -17,7 +16,7 @@ import Classes.MessageType;
  * @author Dani, Iñigo
  */
 public class App {
-	
+
 	/**
 	 * Counter of threads
 	 */ 
@@ -45,7 +44,7 @@ public class App {
 	public void iniciar() {
 
 		try {
-			logger.info("Server started. Press '1' to close the server.");
+			logger.info("Server started.");
 			// Creating server socket
 			servidor = null;
 			servidor = new ServerSocket(PORT);
@@ -95,6 +94,7 @@ public class App {
 	 * @return 0 if the client can connect, -1 if the server is full
 	 */
 	public synchronized static int countThreads(int x, Socket cliente) {
+    logger.info("Inside countThreads method.")
 		if (x == 1) {
 			// Checking if the maximum number of users is reached
 			if (contador < MAXUSERS) {
