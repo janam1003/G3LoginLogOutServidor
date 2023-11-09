@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ResourceBundle;
 import Classes.SigninSignup;
 import Classes.User;
 import Exceptions.EmailAlreadyExistException;
@@ -33,7 +34,7 @@ public class ServerImplementation implements SigninSignup{
 	 * Result of query
 	 */
     private ResultSet rs;
-
+	
     @Override
     public User SignIn(User user) throws IncorrectLoginException, ServerErrorException, UnknownTypeException {
 		try {
@@ -88,6 +89,11 @@ public class ServerImplementation implements SigninSignup{
 					if (rs.getString("id") != null)
 						throw new EmailAlreadyExistException();
 				}
+				//Defining create or replace the procedure
+				final String createOrReplaceProcedure = ResourceBundle.getBundle("config.config").getString("INSERTUSER");
+				stmtCall = con.prepareCall(createOrReplaceProcedure);
+				//Executing query
+				stmtCall.execute();
 				//Defining query to insert user
 				final String insertUser = "CALL insert_res_partner_and_user(?, ?, ?, ?, ?, ?)";
 				//Preparing statement
