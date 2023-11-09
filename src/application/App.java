@@ -94,7 +94,7 @@ public class App {
 	 * @return 0 if the client can connect, -1 if the server is full
 	 */
 	public synchronized static int countThreads(int x, Socket cliente) {
-    logger.info("Inside countThreads method.")
+    logger.info("CountThreads method.");
 		if (x == 1) {
 			// Checking if the maximum number of users is reached
 			if (contador < MAXUSERS) {
