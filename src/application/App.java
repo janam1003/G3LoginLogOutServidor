@@ -61,10 +61,12 @@ public class App {
 				// Checking if the maximum number of users is reached
 				if (countThreads(1, cliente) == -1) {
 					// Sending message to the client that the server is full
+					logger.severe("Max users reached.");
 					ObjectOutputStream oos = new ObjectOutputStream(cliente.getOutputStream());
 					Message message = new Message();
 					message.setType(MessageType.MAX_USER_EXCEPTION);
 					oos.writeObject(message);
+					wait(2);
 					oos.close();
 					cliente.close();
 				}
