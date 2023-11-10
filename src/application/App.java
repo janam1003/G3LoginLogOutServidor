@@ -12,7 +12,7 @@ import Classes.Message;
 import Classes.MessageType;
 
 /**
- *
+ * This class contains the main method of the application.
  * @author Dani, Iñigo
  */
 public class App {
