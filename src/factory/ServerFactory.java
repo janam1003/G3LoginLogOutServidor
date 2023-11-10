@@ -1,14 +1,36 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package factory;
 
+import Classes.SigninSignup;
+import dao.ServerImplementation;
+
 /**
+ * The `ServerFactory` class is responsible for creating and providing instances
+ * of the `SigninSignup` interface.
  *
- * @author Janam
+ * @author Iñigo
  */
 public class ServerFactory {
-    
+
+    /**
+     * Instance of the `SigninSignup` interface.
+     */
+    private static SigninSignup server;
+
+    /**
+     * Check and return an instance of the `SigninSignup` interface.
+     *
+     * @return An instance of the `SigninSignup` interface.
+     */
+    public static SigninSignup getServer() {
+
+        //If there is no instance of the `SigninSignup` interface, create one.
+        if (server == null) {
+
+            server = (SigninSignup) new ServerImplementation();
+
+        }
+
+        //Return the instance of the `SigninSignup` interface.
+        return server;
+    }
 }
